@@ -197,7 +197,11 @@ export default function Home({ books }) {
                 <h3 className="modal__title">Поздравляем с покупкой!</h3>
                 <p className="modal__text">Покупка прошла успешно, наслаждайтесь приобретёнными книгами!</p>
               </div>
-              <button onClick={() => setModalOpened(false)} className="modal__button">
+              <button onClick={() => {
+                setModalOpened(false)
+                setBooksAdded([])
+                setAlertShown(false)
+              }} className="modal__button">
                 Закрыть
               </button>
             </div>

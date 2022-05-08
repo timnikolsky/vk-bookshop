@@ -1,0 +1,270 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+:root {
+  --container-width: 993px;
+  --modal-width: 420px;
+
+  --background: #FFF;
+  --accent-1: #FAFAFA;
+  --accent-2: #EAEAEA;
+  --accent-3: #999;
+  --accent-4: #888;
+  --accent-5: #666;
+  --accent-6: #444;
+  --accent-7: #333;
+  --accent-8: #111;
+  --foreground: #000;
+
+  --danger-lighter: #F7D4D6;
+  --danger-light: #FF1A1A;
+  --danger: #E00;
+  --danger-dark: #C50000;
+
+  --space-xsm: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 3rem;
+
+  --gap: var(--space-md);
+
+  --breakpoint-tablet: 1040px;
+  --breakpoint-mobile: 640px;
+
+  --radius-small: 0.25rem;
+  --radius: 0.5rem;
+}
+
+html, body {
+	padding: 0;
+	margin: 0;
+	font-family: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans,
+		Droid Sans, Helvetica Neue, sans-serif;
+	scroll-behavior: smooth;
+  background: var(--background);
+}
+
+a {
+	color: inherit;
+	text-decoration: none;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+.container {
+	width: var(--container-width);
+	display: grid;
+	margin: 12rem auto 0 auto;
+	display: grid;
+	grid-template-columns: 2fr 1fr;
+	gap: var(--gap);
+  @media screen and (max-width: 1040px) {
+    grid-template-columns: 1fr;
+		margin: 1.5rem 1.5rem 1.5rem 1.5rem;
+		width: auto;
+  }
+}
+
+main {
+  @media screen and (max-width: 1040px) {
+    grid-row: 2;
+  }
+}
+
+.block-title {
+	font-weight: bold;
+	font-size: 2rem;
+	margin-top: 0;
+	margin-bottom: var(--space-lg);
+}
+
+.books {
+	display: flex;
+	flex-direction: column;
+	gap: var(--gap);
+
+  &__item {
+    background: var(--background);
+    border: 1px solid var(--accent-2);
+    border-radius: 0.5rem;
+    padding: var(--space-md);
+    display: flex;
+    gap: var(--gap);
+    align-items: center;
+  
+    &-info {
+      flex-grow: 1;
+    }
+  
+    &-image {
+      width: 4rem;
+    }
+  
+    &-title {
+      margin: 0 0 var(--space-xsm) 0;
+    }
+  
+    &-price {
+      color: var(--accent-8);
+    }
+
+    @media screen and (max-width: 640px) {
+      flex-direction: column;
+
+      & button {
+        width: 100%;
+      }
+
+      &-info {
+        width: 100%;
+      }
+    }
+  }
+}
+
+.button {
+	height: 2.5rem;
+	background: var(--foreground);
+	border-radius: var(--radius-small);
+	border: 1px solid transparent;
+	color: var(--background);
+	font: inherit;
+	display: flex;
+	padding: 0 var(--space-md);
+	align-items: center;
+	transition-duration: 0.2s;
+	justify-content: center;
+
+  &:hover {
+    cursor: pointer;
+    background: var(--background);
+    color: var(--foreground);
+    border: 1px solid var(--foreground);
+  }
+
+  &:disabled {
+    background: var(--accent-1);
+    border: 1px solid var(--accent-2);
+    color: var(--accent-3);
+  }
+}
+
+.cart {
+	background: var(--background);
+	border: 1px solid var(--accent-2);
+	border-radius: var(--radius);
+	padding: var(--space-md);
+	display: flex;
+	gap: var(--gap);
+	flex-direction: column;
+
+  &__actions {
+    display: flex;
+    gap: var(--space-sm);
+    width: 100%;
+    flex-direction: row;
+
+    .button {
+      width: 100%;
+    }
+  }
+}
+
+.alert {
+	border: 1px solid #e00;
+	color: #e00;
+	padding: var(--space-xsm);
+	border-radius: var(--radius);
+	margin-top: var(--gap);
+}
+
+.cart__field {
+	display: flex;
+	gap: 1rem;
+
+  &-icon {
+    width: 2rem;
+    height: 2rem;
+    flex-shrink: 0;
+  }
+
+  &-text {
+    line-height: 19px;
+    display: inline-block;
+    width: auto;
+  }
+
+  &-title {
+    margin: 0 0 var(--space-xsm) 0;
+  }
+}
+
+.backdrop {
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: rgba(0, 0, 0, 0.25);
+
+  @media screen and (max-width: 640px) {
+    align-items: flex-end;
+  }
+}
+
+.modal {
+	z-index: 10;
+	width: 100%;
+	max-width: var(--modal-width);
+	background: var(--background);
+	border-radius: var(--radius);
+	display: flex;
+	flex-direction: column;
+	box-shadow: 0 30px 60px rgba(0, 0, 0, 0.12);
+
+  &__animation {
+    margin-top: -4.75rem;
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-md);
+    align-items: center;
+    text-align: center;
+    gap: var(--space-sm);
+  }
+
+  &__title {
+    font-size: 1.5rem;
+    margin: 0;
+  }
+
+  &__text {
+    margin: 0;
+  }
+
+  &__button {
+    height: calc(4rem - 1px); // Subtract border width from top
+    border: none;
+    border-top: 1px solid #eaeaea;
+    background: white;
+    border-radius: 0 0 var(--radius) var(--radius);
+    cursor: pointer;
+    text-transform: uppercase;
+    z-index: 20;
+  }
+
+  @media screen and (max-width: 640px) {
+    width: 100%;
+		max-width: unset;
+
+    &__button {
+      border-radius: 0;
+    }
+  }
+}

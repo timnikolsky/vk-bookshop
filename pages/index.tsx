@@ -1,47 +1,42 @@
 import { GetStaticProps } from 'next'
-import Head from 'next/head'
 import Image from 'next/image'
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import Button from '../components/Button'
 import books from '../books'
 import Confetti from 'react-confetti'
 import { motion, AnimatePresence, useAnimation } from "framer-motion"
 import Lottie from "lottie-react"
-import starEyes from '../starEyes.json'
+import starEyesAnimation from '../assets/starEyesAnimation.json'
 import plural from '../lib/plural'
 import useWindowSize from 'react-use/lib/useWindowSize'
+import { Book } from '../typings'
 
-const balance = 500
+const balanceShakeAnimation = {
+  scale: [1, 1.5, 1.5, 1],
+  color: ['#111', '#E00', '#E00', '#111'],
+  rotate: [0, -5, 5, -5, 5, -5, 5, -5, 5, -5, 5, -5, 5, -5, 5, -5, 5, 0],
+  transition: {
+    duration: 2,
+    times: [0, 0.1, 0.9, 1]
+  }
+}
 
-export default function Home({ books }) {
-  const { width, height } = useWindowSize()
+const initialBalance = 500
+
+export default function Home({ books }: { books: Book[] }) {
+  const { width: windowWidth, height: windowHeight } = useWindowSize()
   const [booksAdded, setBooksAdded] = useState([] as number[])
   const [alertShown, setAlertShown] = useState(false)
-  const [windowSize, setWindowSize] = useState({
-    width: undefined,
-    height: undefined,
-  })
-  const balanceShakeControls = useAnimation()
-  const balanceRef = useRef()
   const [modalOpened, setModalOpened] = useState(false)
-
-  useEffect(() => {
-    function handleResize() {
-      setWindowSize({
-        width: window.innerWidth,
-        height: window.innerHeight,
-      });
-    }
-    window.addEventListener("resize", handleResize)
-    handleResize()
-    return () => window.removeEventListener("resize", handleResize)
-  }, [])
+  const balanceRef = useRef()
+  const balanceShakeControls = useAnimation()
 
   const booksAddedPrice = booksAdded
     .map(bookId => books.find(book => book.id === bookId).price)
     .reduce(function (a, b) {
       return a + b;
     }, 0)
+  const balance = initialBalance - booksAddedPrice
 
   return (
     <>
@@ -72,20 +67,12 @@ export default function Home({ books }) {
                   </div>
                   <Button
                     onClick={() => {
-                      if (balance - booksAddedPrice - book.price >= 0) {
+                      if (balance - book.price >= 0) {
                         setBooksAdded([...booksAdded, book.id])
                       } else {
                         setAlertShown(true)
                         window.scrollTo(0, 0)
-                        balanceShakeControls.start({
-                          scale: [1, 1.5, 1.5, 1],
-                          color: ['#111', '#E00', '#E00', '#111'],
-                          rotate: [0, -5, 5, -5, 5, -5, 5, -5, 5, -5, 5, -5, 5, -5, 5, -5, 5, 0],
-                          transition: {
-                            duration: 2,
-                            times: [0, 0.1, 0.9, 1]
-                          }
-                        })
+                        balanceShakeControls.start(balanceShakeAnimation)
                       }
                     }}
                     disabled={!Boolean(book.amount - booksAdded.filter(id => id === book.id).length)}
@@ -97,7 +84,8 @@ export default function Home({ books }) {
             }
           </div>
         </main>
-        <aside>
+
+        <div>
           <h1 className="block-title">Личный кабинет</h1>
           <motion.div
             className="cart"
@@ -116,7 +104,7 @@ export default function Home({ books }) {
                   className="cart__field-text"
                   ref={balanceRef}
                 >
-                  {balance - booksAddedPrice}₽
+                  {balance}₽
                 </motion.span>
               </div>
             </div>
@@ -171,8 +159,13 @@ export default function Home({ books }) {
               </motion.div>
             }
           </AnimatePresence>
-        </aside>
+        </div>
       </div>
+
+      {/*
+        AnimationPresence allows to play animation
+        before element dissapears from the DOM
+      */}
       <AnimatePresence>
         {
           modalOpened &&
@@ -189,7 +182,7 @@ export default function Home({ books }) {
                   <Lottie
                     loop={false}
                     autoplay={true}
-                    animationData={starEyes}
+                    animationData={starEyesAnimation}
                     style={{ width: '16rem' }}
                     className="modal__animation"
                   />
@@ -197,18 +190,21 @@ export default function Home({ books }) {
                 <h3 className="modal__title">Поздравляем с покупкой!</h3>
                 <p className="modal__text">Покупка прошла успешно, наслаждайтесь приобретёнными книгами!</p>
               </div>
-              <button onClick={() => {
-                setModalOpened(false)
-                setBooksAdded([])
-                setAlertShown(false)
-              }} className="modal__button">
+              <button
+                className="modal__button"
+                onClick={() => {
+                  setModalOpened(false)
+                  setBooksAdded([])
+                  setAlertShown(false)
+                }}
+              >
                 Закрыть
               </button>
             </div>
             <Confetti
-              width={width}
-              height={height}
-              colors={['#07F', '#50E3C2']}
+              width={windowWidth}
+              height={windowHeight}
+              colors={['#0077FF', '#50E3C2']}
               numberOfPieces={300}
             />
           </motion.div>
@@ -218,10 +214,13 @@ export default function Home({ books }) {
   )
 }
 
+/*
+  In real-world app the book catalog would most likely
+  come from the backend, so that's why I used getStaticProps
+  instead of importing file directly on the client
+*/
 export const getStaticProps: GetStaticProps = async (context) => {
   return {
-    props: {
-      books
-    }
+    props: { books }
   }
 }

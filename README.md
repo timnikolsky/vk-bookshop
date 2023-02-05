@@ -1,6 +1,6 @@
 # VK Bookshop
 
-Project for participation in the [Sferum Summer Campus](https://prof-sferum.ru/campus) (russian competition).
+Project for participation in the Sferum Summer Campus (russian competition).
 
 Sorry, no translation 👀
 
